@@ -65,3 +65,36 @@ ENV DFS="prod"
 RUN apt-get update && apt-get install -y curl stress && apt-get clean
 CMD stress --cpu 1 --vm-bytes 64M --vm 1
 ```
+
+**Volumes Tipo bind:**
+
+/opt/dfs
+docker container run -ti --mount type=bind,src=/opt/dfs,dst=/dfs,ro debian
+docker volume create dfs
+docker volume inspect dfs
+```json
+[
+    {
+        "CreatedAt": "2021-08-03T03:21:19Z",
+        "Driver": "local",
+        "Labels": {},
+        "Mountpoint": "/var/lib/docker/volumes/dfs/_data",
+        "Name": "dfs",
+        "Options": {},
+        "Scope": "local"
+    }
+]
+```
+
+    docker container run -ti --mount type=volume,src=dfs,dst=/dfs debian
+    docker exec -ti [CONTAINER ID] touch /dfs/teste1
+    docker volume rm dfs 
+
+    docker container prune
+    docker volume prune
+    docker image prune
+
+    docker container create -v /opt/dfs --name dbdados centos #old sintaxe
+
+docker run -d -p 5432:5432 --name pgsql1 --volumes-from dbdados -e POSTGRESQL_USER=docker -e POSTGRESQL_docker -e POSTGRESQL_DB=docker kamui/postgresql #old volume-from sintaxe
+
