@@ -110,8 +110,10 @@ docker volume inspect dfs
 
 ## Dia02 :smile:
 CONTAINER
-    docker container create -v /opt/giro/:/giro --name dbdados centos
 
+    docker container create -v /opt/giro/:/data --name dbdados centos
+    docker container run -d -p 5432:5432 --name pgsql1 --volumes-from dbdados -e POSTGRESQL_USER=docker -e POSTGRESQL_docker -e POSTGRESQL_DB=docker kamui/postgresql
+    docker container run -d -p 5433:5432 --name pgsql2 --volumes-from dbdados -e POSTGRESQL_USER=docker -e POSTGRESQL_docker -e POSTGRESQL_DB=docker kamui/postgresql
 
 BIND
 
@@ -121,8 +123,36 @@ BIND
 VOLUME
 
 
-docker container run -it --mount type=volume,src=giro,dst=/giromount debian
-docker container rm -f 7887824c5407
-docker volume rm giro
+    docker container run -it --mount type=volume,src=giro,dst=/giromount debian
+    docker container rm -f 7887824c5407
+    docker volume rm giro
+    
+    docker volume create dbdados
+    docker volume ls
+    docker container run -d -p 5432:5432 --name pgsql1 --mount type=volume,src=dbdados,dst=/data -e POSTGRESQL_USER=docker -e POSTGRESQL_docker -e POSTGRESQL_DB=docker kamui/postgresql
+    
+    docker container run -d -p 5433:5432 --name pgsql2 --mount type=volume,src=dbdados,dst=/data -e POSTGRESQL_USER=docker -e POSTGRESQL_docker -e POSTGRESQL_DB=docker kamui/postgresql
+    
+    docker container ls -a 
+    docker volume ls    
+    docker volume inspect dbdados 
+
+BACKUP
+
+
+    docker container run -ti --mount type=volume,src=dbdados,dst=/data --mount type=bind,src=/opt/backup,dst=/backup debian tar -cvf /backup/bkp-banco.tar /data 
+    
+    docker container run -ti --mount type=bind,src=/volume,dst=/volume ubuntu
+    docker container run -ti --mount type=bind,src=/root/primeiro_container,dst=/volume ubuntu
+    docker container run -ti --mount type=bind,src=/root/primeiro_container,dst=/volume,ro ubuntu
+    docker volume create giropops
+    docker volume rm giropops
+    docker volume inspect giropops
+    docker volume prune
+    docker container run -d --mount type=volume,source=giropops,destination=/var/opa  nginx
+    docker container create -v /data --name dbdados centos
+    docker run -d -p 5432:5432 --name pgsql1 --volumes-from dbdados -e POSTGRESQL_USER=docker -e POSTGRESQL_PASS=docker -e POSTGRESQL_DB=docker kamui/postgresql
+    docker run -d -p 5433:5432 --name pgsql2 --volumes-from dbdados -e  POSTGRESQL_USER=docker -e POSTGRESQL_PASS=docker -e POSTGRESQL_DB=docker kamui/postgresql
+    docker run -ti --volumes-from dbdados -v $(pwd):/backup debian tar -cvf /backup/backup.tar /data
 
 
