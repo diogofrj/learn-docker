@@ -48,6 +48,25 @@ resource "aws_instance" "project-iac" {
   associate_public_ip_address = lookup(var.awsprops, "publicip")
   key_name = lookup(var.awsprops, "keyname")
 
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = file("iackey.pem")
+    host        = self.public_ip
+  }
+
+
+  provisioner "file" {
+    source      = "script.sh"
+    destination = "/tmp/script.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/script.sh",
+      "/tmp/script.sh"
+    ]
+  }
 
   vpc_security_group_ids = [
     aws_security_group.project-iac-sg.id
@@ -59,6 +78,8 @@ resource "aws_instance" "project-iac" {
     OS = "UBUNTU"
     Managed = "IAC"
   }
+  
+
 
   depends_on = [ aws_security_group.project-iac-sg ]
 }

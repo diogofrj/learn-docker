@@ -6,6 +6,16 @@
 
 [https://docs.docker.com/install](https://docs.docker.com/install)
 
+    sudo apt-get update
+    sudo apt-get install     apt-transport-https     ca-certificates     curl     gnupg     lsb-release
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    echo   "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get update
+    sudo apt-get install docker-ce docker-ce-cli containerd.io
+    sudo su -
+    echo $USER
+    sudo usermod -aG docker $USER
 
 ### Comandos
 
@@ -96,5 +106,23 @@ docker volume inspect dfs
 
     docker container create -v /opt/dfs --name dbdados centos #old sintaxe
 
-docker run -d -p 5432:5432 --name pgsql1 --volumes-from dbdados -e POSTGRESQL_USER=docker -e POSTGRESQL_docker -e POSTGRESQL_DB=docker kamui/postgresql #old volume-from sintaxe
+    docker run -d -p 5432:5432 --name pgsql1 --volumes-from dbdados -e POSTGRESQL_USER=docker -e POSTGRESQL_docker -e POSTGRESQL_DB=docker kamui/postgresql #old volume-from sintaxe
+
+## Dia02 :smile:
+CONTAINER
+    docker container create -v /opt/giro/:/giro --name dbdados centos
+
+
+BIND
+
+    docker container run -ti --mount type=bind,src=/opt/giro,dst=/giro debian
+    docker container run -ti --mount type=bind,src=/opt/giro,dst=/giro,ro debian
+
+VOLUME
+
+
+docker container run -it --mount type=volume,src=giro,dst=/giromount debian
+docker container rm -f 7887824c5407
+docker volume rm giro
+
 
