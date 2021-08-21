@@ -156,3 +156,121 @@ BACKUP
     docker run -ti --volumes-from dbdados -v $(pwd):/backup debian tar -cvf /backup/backup.tar /data
 
 
+DOCKERFILE
+
+```dockerfile
+FROM debian
+
+RUN apt-get update && apt-get install -y apache2 && apt-get clean
+RUN chown www-data:www-data /var/lock && chown www-data:www-data /var/run/ && chown www-data:www-data /var/log/
+ENV APACHE_LOCK_DIR="/var/lock"
+ENV APACHE_PID_FILE="/var/run/apache2.pid"
+ENV APACHE_RUN_USER="www-data"
+ENV APACHE_RUN_GROUP="www-data"
+ENV APACHE_LOG_DIR="/var/log/apache2"
+
+ADD index.html /var/www/html
+
+LABEL description="Webserver"
+LABEL version="1.1"
+
+USER www-data
+
+WORKDIR /var/www/html/
+
+VOLUME /var/www/html/
+EXPOSE 80
+
+ENTRYPOINT ["/usr/sbin/apachectl"]
+CMD ["-D", "FOREGROUND"]
+
+```
+    docker image build -t meu_apache:2.0.0 .
+    docker image build -t meu_apache:2.0.0 . --no-cache
+    docker container run -it -p 8080:80
+    docker container run -ti -P # pega a porta do expose e escolhe uma aleatorea
+    
+    docker container run -ti meu_apache:1.0.0
+    docker container run -ti meu_apache:2.0.0
+    
+    docker container run -d -p 8080:80 meu_apache:2.0.0
+    
+    docker image build -t meu_apache:4.0.0 .
+    docker container run -d -p 8000:80 meu_apache:4.0.0
+    docker container logs <ID>
+    docker container rm -f $(docker ps -q)
+
+
+DOCKERFILE - MULTISTAGE
+
+DOCKER HUB
+
+    docker image tag c9fdbf36da85 diogofernandes/apache_2_curso:1.0.0
+    docker login
+    docker push diogofernandes/apache_2_curso:1.0.0
+    docker pull diogofernandes/apache_2_curso:1.0.0
+    docker container run -d diogofernandes/apache_2_curso:1.0.0
+
+    docker container run -d -p 5000:5000 --restart=always --name registry registry:2
+    docker logout
+    docker image tag c9fdbf36da85 localhost:5000/apache_2_curso:2.0.0
+    docker push localhost:5000/apache_2_curso:2.0.0
+    docker container run -d localhost:5000/apache_2_curso:2.0.0
+
+    curl localhost:5000/v2/_catalog
+    curl localhost:5000/v2/apache_2_curso/tags/list
+
+    docker image inspect debian
+    docker history linuxtips/apache:1.0
+    docker login
+    docker login registry.suaempresa.com
+    docker push linuxtips/apache:1.0
+    docker pull linuxtips/apache:1.0
+    docker image ls
+    docker container run -d -p 5000:5000 --restart=always --name registry registry:2
+    docker tag IMAGEMID localhost:5000/apache
+
+
+
+Projeto - Preparar imagem com ferramentas cloud e IAC.
+
+
+DOCKER MACHINE
+
+docker-machine create -d hyperv --hyperv-virtual-switch "Bridge" VMDOCKER
+
+docker-machine.exe rm VMDOCKER
+docker-machine.exe inspect VMDOCKER
+docker-machine.exe ip VMDOCKER
+docker-machine.exe ssh vmdocker
+docker container run -d -p 8080:80 nginx
+docker-machine.exe status|start|stop vmdocker
+docker-machine.exe env -u
+eval $("C:\Users\dfs\bin\docker-machine.exe" env -u)
+docker-machine.exe rm vmdocker -f
+
+
+DOCKER SWARM
+
+masternode
+docker swarm init --advertise-addr 192.168.0.29
+docker node ls
+docker node promote node02
+
+docker swarm leave -f 
+docker swarm join-token worker
+docker swarm join-token manager
+
+docker swarm join-token --rotate manager
+docker swarm join-token --rotate worker
+
+docker node demote node2
+docker node rm -f node2
+
+docker node inspect node1
+
+docker service create --name webserver --replicas 3 -p 8080:80 nginx
+docker service ps webserver
+
+docker node update --availability pause
+docker node update --availability pause node2

@@ -10,18 +10,18 @@ sudo usermod -aG docker $USER
 
 #ZSH
 #https://marcelosena.com/como-instalar-o-shell-zsh-oh-my-zsh-tema-e-plugins/
-#sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 #Instalando zsh-history-substring-search
-#git clone https://github.com/zsh-users/zsh-history-substring-search.git ~/.oh-my-zsh/custom/plugins/zsh-history-substring-search
+git clone https://github.com/zsh-users/zsh-history-substring-search.git ~/.oh-my-zsh/custom/plugins/zsh-history-substring-search
 #Instalando zsh-syntax-highlighting
-#git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 #Instalando zsh-autosuggestions
-#git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 #chsh -s /usr/bin/zsh
 #git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 #sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/g' ~/.zshrc && source ~/.zshrc
 #zsh
-#sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnoster"/g' ~/.zshrc && source ~/.zshrc
+#sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="solus"/g' ~/.zshrc && source ~/.zshrc
 #sed -i 's/ZSH_THEME="solus"/ZSH_THEME="robbyrussell"/g' ~/.zshrc && source ~/.zshrc
 
 #aws ec2 stop-instances --instance-ids i-078ac7d4f9342a094
